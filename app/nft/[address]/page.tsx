@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { arcTestnet } from '@/lib/chains'
 import { fetchProvenanceGraph, ProvenanceGraph, ProvenanceNode, AttestationNode } from '@/lib/graph-builder'
 import { generateMockProvenanceGraph } from '@/lib/mock-data'
-import { getExplorerAddressUrl, PROVENANCE_REGISTRY_ADDRESS } from '@/lib/contracts'
+import { getExplorerAddressUrl, ARTIFACT_REGISTRY_V1_ADDRESS } from '@/lib/contracts'
 import { WalletConnect } from '@/components/wallet-connect'
 import { ProvenanceMetrics } from '@/components/provenance-metrics'
 import { ProvenanceGraphView } from '@/components/provenance-graph'
@@ -120,12 +120,12 @@ export default function NftAnalysisPage() {
                                 </Badge>
                             )}
                             <a
-                                href={getExplorerAddressUrl(PROVENANCE_REGISTRY_ADDRESS)}
+                                href={getExplorerAddressUrl(ARTIFACT_REGISTRY_V1_ADDRESS)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="font-mono text-sm text-violet-400 hover:underline inline-flex items-center gap-2"
                             >
-                                {PROVENANCE_REGISTRY_ADDRESS}
+                                {ARTIFACT_REGISTRY_V1_ADDRESS}
                                 <ExternalLink className="w-3 h-3" />
                             </a>
                         </div>

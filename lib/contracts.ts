@@ -1,8 +1,13 @@
 import { Address } from 'viem'
 
 // Contract addresses on Arc Testnet
+// Legacy (Provenance v2)
 export const DIGITAL_OBJECT_NFT_ADDRESS: Address = '0x87020198e7595C60b200EA80be41548F44573365'
 export const PROVENANCE_REGISTRY_ADDRESS: Address = '0xF015b52C9739Dc8D0739e7f7700eC7bbaE9B77C7'
+
+// Artifact Protocol (v1)
+export const ARTIFACT_REGISTRY_V1_ADDRESS: Address = '0xD76546043E4d9bb7fA3Bd73533A02c82aE4be2f8'
+export const PAYABLE_USAGE_POLICY_V1_ADDRESS: Address = '0x103944642c5Cc62BbF80d967c690f3EADac2b47e'
 
 // Attestation kinds
 export const ATTESTATION_KIND = {

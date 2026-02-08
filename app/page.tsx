@@ -2,7 +2,7 @@ import { WalletConnect } from '@/components/wallet-connect'
 import { NftSearch } from '@/components/nft-search'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { PROVENANCE_REGISTRY_ADDRESS } from '@/lib/contracts'
+import { ARTIFACT_REGISTRY_V1_ADDRESS } from '@/lib/contracts'
 import { GitBranch, ExternalLink } from 'lucide-react'
 
 export default function HomePage() {
@@ -47,18 +47,18 @@ export default function HomePage() {
           <CardContent className="pt-6 space-y-3">
             <p className="text-sm text-muted-foreground">Try with the deployed registry:</p>
             <a
-              href={`/nft/${PROVENANCE_REGISTRY_ADDRESS}`}
+              href={`/nft/${ARTIFACT_REGISTRY_V1_ADDRESS}`}
               className="font-mono text-sm text-violet-400 hover:underline inline-flex items-center gap-2"
             >
-              {PROVENANCE_REGISTRY_ADDRESS}
+              {ARTIFACT_REGISTRY_V1_ADDRESS}
               <ExternalLink className="w-3 h-3" />
             </a>
             <div className="pt-2 border-t border-border/30">
               <a
-                href={`/nft/${PROVENANCE_REGISTRY_ADDRESS}?mock=true`}
+                href={`/nft/${ARTIFACT_REGISTRY_V1_ADDRESS}?mock=true`}
                 className="text-sm text-yellow-400 hover:underline inline-flex items-center gap-2"
               >
-                🎯 View Demo with Sample Data
+                View Demo with Sample Data
                 <ExternalLink className="w-3 h-3" />
               </a>
             </div>
