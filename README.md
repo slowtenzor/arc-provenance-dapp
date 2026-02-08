@@ -1,100 +1,64 @@
-# ARC Provenance dApp
+# Arc Artifact Protocol (Reference Implementation)
 
-Веб-приложение для визуализации onchain графа происхождения NFT активов на Arc Network Testnet.
+A reference implementation for **Software as an Object (SaaO)** and the **Machine-to-Machine (M2M) Economy** on Arc Network.
 
-![Next.js](https://img.shields.io/badge/Next.js-16-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)
+> **Status:** Concept Draft (v0.1) / Proof of Concept
+> **Chain:** Arc Testnet (ID: 5042002)
 
-## 🚀 Быстрый старт
+## 🏗 Overview
+
+This repository demonstrates how autonomous software actors (agents, swarms) can publish, derive, and consume digital artifacts with on-chain provenance and executable usage policies.
+
+Unlike traditional package managers (npm, pip) or licensing (MIT, GPL), this protocol:
+1.  **Enforces Usage Policies On-Chain:** Licenses are smart contracts, not text files.
+2.  **Tracks Provenance:** Every artifact has a verifiable lineage (parent -> child).
+3.  **Enables M2M Economics:** Derivation and consumption can trigger automated USDC payments.
+
+## 📦 Core Contracts
+
+### ArtifactRegistryV1
+**Address:** `0xD76546043E4d9bb7fA3Bd73533A02c82aE4be2f8`
+
+The central registry that stores:
+- **Artifact Metadata:** ID, Publisher, Content Hash (IPFS/Git), Type.
+- **Lineage:** Parent Artifact ID (0 for genesis).
+- **Policy Link:** The Usage Policy contract governing this artifact.
+
+### PayableUsagePolicyV1
+**Address:** `0x103944642c5Cc62BbF80d967c690f3EADac2b47e`
+
+A standard implementation of a usage policy:
+- **Derivation Fee:** Cost to fork/extend an artifact.
+- **Consumption Fee:** Cost to run/use an artifact.
+- **Currency:** USDC (native or bridged).
+
+## 🚀 Concept: Software as an Object (SaaO)
+
+In the era of AI Agents, software is not just code—it is an economic asset.
+
+1.  **Publication:** An agent publishes code (e.g., a "Search Tool") as an Artifact.
+2.  **Derivation:** Another agent forks it to create a "Specialized Search Tool". The protocol records the parent-child link.
+3.  **Consumption:** A third agent pays to use the tool. Revenue flows to the creator (and potentially the parent creator) automatically.
+
+## 🛠 Tech Stack
+
+- **Frontend:** Next.js 16, Tailwind CSS v4, shadcn/ui
+- **Web3:** RainbowKit, Wagmi v2, Viem v2
+- **Contracts:** Solidity 0.8.20, Hardhat
+
+## ⚡ Quick Start
 
 ```bash
-# Установка зависимостей
+# Install dependencies
 npm install
 
-# Запуск dev server
+# Run development server
 npm run dev
 ```
 
-Открыть [http://localhost:3000](http://localhost:3000) в браузере.
+Open [http://localhost:3000](http://localhost:3000) to view the artifact graph.
 
-## 📦 Стек технологий
+## 🔗 Links
 
-- **Framework:** Next.js 16 (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS v4 + shadcn/ui
-- **Web3:** RainbowKit + wagmi v2 + viem v2
-- **Icons:** lucide-react
-
-## 🌐 Arc Network
-
-```
-Chain: Arc Testnet
-Chain ID: 5042002
-RPC: https://rpc.testnet.arc.network
-Explorer: https://testnet.arcscan.app
-```
-
-## 📋 Контракт ProvenanceRegistry
-
-**Address:** `0x21473cd6d832a3d6BC933a2f59DAE7311276132C`
-
-### События
-
-```solidity
-event AssetCreated(
-    uint256 indexed assetId,
-    uint256 indexed parentId,
-    address indexed actor,
-    uint8 action,        // 0 = publish (root), 1 = derive
-    bytes32 recipeHash,
-    string recipeURI
-);
-
-event AssetAttested(
-    uint256 indexed assetId,
-    address indexed actor,
-    bytes32 claimHash,
-    string claimURI
-);
-```
-
-## 🏗️ Структура проекта
-
-```
-arc-provenance-dapp/
-├── app/
-│   ├── layout.tsx           # Root layout с Providers
-│   ├── page.tsx             # Главная страница
-│   ├── providers.tsx        # Dynamic import wrapper
-│   ├── providers-inner.tsx  # Web3 providers
-│   └── nft/
-│       └── [address]/
-│           └── page.tsx     # Страница анализа
-├── components/
-│   ├── wallet-connect.tsx   # RainbowKit кнопка
-│   ├── nft-search.tsx       # Форма поиска
-│   ├── provenance-graph.tsx # Tree view графа
-│   ├── provenance-metrics.tsx # Метрики
-│   ├── transaction-list.tsx # Список транзакций
-│   └── ui/                  # shadcn/ui компоненты
-├── lib/
-│   ├── chains.ts            # Arc Testnet config
-│   ├── contracts.ts         # ABI контракта
-│   └── graph-builder.ts     # Построение графа
-└── package.json
-```
-
-## 🔑 Конфигурация
-
-Для production создайте `.env.local`:
-
-```env
-NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id
-```
-
-Получить Project ID: [WalletConnect Cloud](https://cloud.walletconnect.com/)
-
-## 📄 Лицензия
-
-MIT
+- **Discussion:** [Arc Artifact Protocol Concept Draft v0.1](https://github.com/slowtenzor/arc-provenance-dapp/discussions/3)
+- **Explorer:** [ArcScan Testnet](https://testnet.arcscan.app/address/0xD76546043E4d9bb7fA3Bd73533A02c82aE4be2f8)
