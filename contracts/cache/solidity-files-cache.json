@@ -647,6 +647,158 @@
       "artifacts": [
         "ProvenanceRegistryV2"
       ]
+    },
+    "/Users/road/Documents/WORKS/ARC/arc-provenance-dapp/contracts/contracts/ArtifactRegistryV1.sol": {
+      "lastModificationDate": 1770581624247,
+      "contentHash": "c012b9365e897287b3d3beb7b2b49ba7",
+      "sourceName": "contracts/ArtifactRegistryV1.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+        "./policies/IUsagePolicy.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ArtifactRegistryV1"
+      ]
+    },
+    "/Users/road/Documents/WORKS/ARC/arc-provenance-dapp/contracts/contracts/policies/IUsagePolicy.sol": {
+      "lastModificationDate": 1770581624247,
+      "contentHash": "3001cdcdaded6ac5fc7d8cc8ee395d3a",
+      "sourceName": "contracts/policies/IUsagePolicy.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IUsagePolicy"
+      ]
+    },
+    "/Users/road/Documents/WORKS/ARC/arc-provenance-dapp/contracts/node_modules/@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+      "lastModificationDate": 1770401062572,
+      "contentHash": "190613e556d509d9e9a0ea43dc5d891d",
+      "sourceName": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ReentrancyGuard"
+      ]
+    },
+    "/Users/road/Documents/WORKS/ARC/arc-provenance-dapp/contracts/contracts/policies/PayableUsagePolicyV1.sol": {
+      "lastModificationDate": 1770581624247,
+      "contentHash": "c0b5c777ef2b1dd8201504ec68a0a93a",
+      "sourceName": "contracts/policies/PayableUsagePolicyV1.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IUsagePolicy.sol",
+        "../ArtifactRegistryV1.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "PayableUsagePolicyV1"
+      ]
     }
   }
 }

@@ -58,17 +58,29 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SafeCast__factory>;
     getContractFactory(
+      name: "ReentrancyGuard",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ReentrancyGuard__factory>;
+    getContractFactory(
       name: "Strings",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Strings__factory>;
+    getContractFactory(
+      name: "ArtifactRegistryV1",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ArtifactRegistryV1__factory>;
     getContractFactory(
       name: "DigitalObjectNFT",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.DigitalObjectNFT__factory>;
     getContractFactory(
-      name: "ProvenanceRegistry",
+      name: "IUsagePolicy",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ProvenanceRegistry__factory>;
+    ): Promise<Contracts.IUsagePolicy__factory>;
+    getContractFactory(
+      name: "PayableUsagePolicyV1",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PayableUsagePolicyV1__factory>;
     getContractFactory(
       name: "ProvenanceRegistryV2",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -130,20 +142,35 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.SafeCast>;
     getContractAt(
+      name: "ReentrancyGuard",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ReentrancyGuard>;
+    getContractAt(
       name: "Strings",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.Strings>;
+    getContractAt(
+      name: "ArtifactRegistryV1",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ArtifactRegistryV1>;
     getContractAt(
       name: "DigitalObjectNFT",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.DigitalObjectNFT>;
     getContractAt(
-      name: "ProvenanceRegistry",
+      name: "IUsagePolicy",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.ProvenanceRegistry>;
+    ): Promise<Contracts.IUsagePolicy>;
+    getContractAt(
+      name: "PayableUsagePolicyV1",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PayableUsagePolicyV1>;
     getContractAt(
       name: "ProvenanceRegistryV2",
       address: string | ethers.Addressable,
@@ -195,17 +222,29 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.SafeCast>;
     deployContract(
+      name: "ReentrancyGuard",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ReentrancyGuard>;
+    deployContract(
       name: "Strings",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Strings>;
+    deployContract(
+      name: "ArtifactRegistryV1",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ArtifactRegistryV1>;
     deployContract(
       name: "DigitalObjectNFT",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.DigitalObjectNFT>;
     deployContract(
-      name: "ProvenanceRegistry",
+      name: "IUsagePolicy",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.ProvenanceRegistry>;
+    ): Promise<Contracts.IUsagePolicy>;
+    deployContract(
+      name: "PayableUsagePolicyV1",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PayableUsagePolicyV1>;
     deployContract(
       name: "ProvenanceRegistryV2",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -267,20 +306,35 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.SafeCast>;
     deployContract(
+      name: "ReentrancyGuard",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ReentrancyGuard>;
+    deployContract(
       name: "Strings",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Strings>;
+    deployContract(
+      name: "ArtifactRegistryV1",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ArtifactRegistryV1>;
     deployContract(
       name: "DigitalObjectNFT",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.DigitalObjectNFT>;
     deployContract(
-      name: "ProvenanceRegistry",
+      name: "IUsagePolicy",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.ProvenanceRegistry>;
+    ): Promise<Contracts.IUsagePolicy>;
+    deployContract(
+      name: "PayableUsagePolicyV1",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PayableUsagePolicyV1>;
     deployContract(
       name: "ProvenanceRegistryV2",
       args: any[],

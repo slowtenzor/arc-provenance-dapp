@@ -136,6 +136,23 @@ export const PROVENANCE_REGISTRY_ABI = [
         stateMutability: 'nonpayable',
         type: 'function',
     },
+
+] as const
+
+// ArtifactRegistryV1 ABI
+export const ARTIFACT_REGISTRY_ABI = [
+    {
+        anonymous: false,
+        inputs: [
+            { indexed: true, name: 'artifactId', type: 'uint256' },
+            { indexed: true, name: 'publisher', type: 'address' },
+            { indexed: true, name: 'parentId', type: 'uint256' },
+            { indexed: false, name: 'usagePolicy', type: 'address' },
+            { indexed: false, name: 'contentHash', type: 'bytes32' },
+        ],
+        name: 'ArtifactPublished',
+        type: 'event',
+    },
 ] as const
 
 export const EXPLORER_URL = 'https://testnet.arcscan.app'

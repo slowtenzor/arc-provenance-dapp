@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, http, Address } from 'viem'
 import Link from 'next/link'
 import { arcTestnet } from '@/lib/chains'
 import { fetchProvenanceGraph, ProvenanceGraph, ProvenanceNode, AttestationNode } from '@/lib/graph-builder'
 import { generateMockProvenanceGraph } from '@/lib/mock-data'
-import { getExplorerAddressUrl, ARTIFACT_REGISTRY_V1_ADDRESS } from '@/lib/contracts'
+import { getExplorerAddressUrl, ARTIFACT_REGISTRY_V1_ADDRESS, DIGITAL_OBJECT_NFT_ADDRESS } from '@/lib/contracts'
 import { WalletConnect } from '@/components/wallet-connect'
 import { ProvenanceMetrics } from '@/components/provenance-metrics'
 import { ProvenanceGraphView } from '@/components/provenance-graph'
@@ -70,7 +70,7 @@ export default function NftAnalysisPage() {
                 transport: http(),
             })
 
-            const provenanceGraph = await fetchProvenanceGraph(client)
+            const provenanceGraph = await fetchProvenanceGraph(client, address as Address)
             setGraph(provenanceGraph)
         } catch (err) {
             console.error('Failed to fetch provenance data:', err)
@@ -108,26 +108,17 @@ export default function NftAnalysisPage() {
                 <WalletConnect />
             </header>
 
-            {/* Contract Address */}
+            {/* Contracts */}
             <Card className="mb-8 bg-card/50 border-border/30">
                 <CardContent className="py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Badge variant="outline" className="text-xs">Registry</Badge>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                            <h3 className="font-semibold">Contracts</h3>
                             {useMock && (
                                 <Badge variant="secondary" className="text-xs bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
                                     Demo Mode
                                 </Badge>
                             )}
-                            <a
-                                href={getExplorerAddressUrl(ARTIFACT_REGISTRY_V1_ADDRESS)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="font-mono text-sm text-violet-400 hover:underline inline-flex items-center gap-2"
-                            >
-                                {ARTIFACT_REGISTRY_V1_ADDRESS}
-                                <ExternalLink className="w-3 h-3" />
-                            </a>
                         </div>
                         <Button
                             variant="ghost"
@@ -139,8 +130,36 @@ export default function NftAnalysisPage() {
                             Refresh
                         </Button>
                     </div>
+
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-4">
+                            <Badge variant="outline" className="text-xs w-28 justify-center">ArtifactRegistry</Badge>
+                            <a
+                                href={getExplorerAddressUrl(ARTIFACT_REGISTRY_V1_ADDRESS)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-mono text-sm text-violet-400 hover:underline inline-flex items-center gap-2"
+                            >
+                                {ARTIFACT_REGISTRY_V1_ADDRESS}
+                                <ExternalLink className="w-3 h-3" />
+                            </a>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <Badge variant="outline" className="text-xs w-28 justify-center">DigitalObject</Badge>
+                            <a
+                                href={getExplorerAddressUrl(DIGITAL_OBJECT_NFT_ADDRESS)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-mono text-sm text-violet-400 hover:underline inline-flex items-center gap-2"
+                            >
+                                {DIGITAL_OBJECT_NFT_ADDRESS}
+                                <ExternalLink className="w-3 h-3" />
+                            </a>
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
+
 
             {/* Error State */}
             {error && (

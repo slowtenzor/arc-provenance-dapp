@@ -2,6 +2,7 @@ import { PublicClient, Address, Hash } from 'viem'
 import {
     PROVENANCE_REGISTRY_ADDRESS,
     DIGITAL_OBJECT_NFT_ADDRESS,
+    ARTIFACT_REGISTRY_V1_ADDRESS,
     ATTESTATION_KIND
 } from './contracts'
 
@@ -55,6 +56,8 @@ interface AttestedEventArgs {
 
 // Constants
 const CHUNK_SIZE = 9000n
+// ArtifactRegistryV1 deployed around block 25.9M on Arc Testnet
+const CONTRACT_DEPLOY_BLOCK = 25900000n
 
 // Event definitions for MVP 1
 const DERIVED_EVENT = {
@@ -137,7 +140,7 @@ export async function fetchDerivedEvents(
     fromBlock?: bigint
 ): Promise<DerivedRelation[]> {
     const currentBlock = await client.getBlockNumber()
-    const startBlock = fromBlock ?? 0n
+    const startBlock = fromBlock ?? CONTRACT_DEPLOY_BLOCK
 
     const parseLog = (log: { args: unknown; transactionHash: Hash | null; blockNumber: bigint }): DerivedRelation | null => {
         const args = log.args as unknown as DerivedEventArgs
@@ -172,7 +175,7 @@ export async function fetchAttestedEvents(
     fromBlock?: bigint
 ): Promise<AttestationNode[]> {
     const currentBlock = await client.getBlockNumber()
-    const startBlock = fromBlock ?? 0n
+    const startBlock = fromBlock ?? CONTRACT_DEPLOY_BLOCK
 
     const parseLog = (log: { args: unknown; transactionHash: Hash | null; blockNumber: bigint }): AttestationNode | null => {
         const args = log.args as unknown as AttestedEventArgs
@@ -285,10 +288,81 @@ export function buildProvenanceGraph(
 }
 
 // Helper to fetch and build in one call
+// Helper to fetch and build in one call
+interface ArtifactPublishedEventArgs {
+    artifactId: bigint
+    publisher: Address
+    parentId: bigint
+    usagePolicy: Address
+    contentHash: Hash
+}
+
+
+const ARTIFACT_PUBLISHED_EVENT = {
+    type: 'event' as const,
+    name: 'ArtifactPublished',
+    inputs: [
+        { indexed: true, name: 'artifactId', type: 'uint256' },
+        { indexed: true, name: 'publisher', type: 'address' },
+        { indexed: true, name: 'parentId', type: 'uint256' },
+        { indexed: false, name: 'usagePolicy', type: 'address' },
+        { indexed: false, name: 'contentHash', type: 'bytes32' },
+    ],
+}
+
+async function fetchArtifactEvents(
+    client: PublicClient,
+    registryAddress: Address,
+    fromBlock?: bigint
+): Promise<DerivedRelation[]> {
+    const currentBlock = await client.getBlockNumber()
+    const startBlock = fromBlock ?? CONTRACT_DEPLOY_BLOCK
+    const results: DerivedRelation[] = []
+    let currentFrom = startBlock
+
+    while (currentFrom <= currentBlock) {
+        const currentTo = currentFrom + CHUNK_SIZE > currentBlock ? currentBlock : currentFrom + CHUNK_SIZE
+
+        try {
+            const logs = await client.getLogs({
+                address: registryAddress,
+                event: ARTIFACT_PUBLISHED_EVENT,
+                fromBlock: currentFrom,
+                toBlock: currentTo,
+            })
+
+            for (const log of logs) {
+                const args = log.args as unknown as ArtifactPublishedEventArgs
+                results.push({
+                    parentId: args.parentId,
+                    childId: args.artifactId,
+                    actor: args.publisher,
+                    ref: args.contentHash,
+                    txHash: log.transactionHash as Hash,
+                    blockNumber: log.blockNumber,
+                })
+            }
+        } catch (error) {
+            console.error(`Failed to fetch logs from ${currentFrom} to ${currentTo}:`, error)
+        }
+        currentFrom = currentTo + 1n
+    }
+    return results
+}
+
 export async function fetchProvenanceGraph(
     client: PublicClient,
     nftAddress: Address = DIGITAL_OBJECT_NFT_ADDRESS
 ): Promise<ProvenanceGraph> {
+
+    // Switch logic based on address
+    if (nftAddress.toLowerCase() === ARTIFACT_REGISTRY_V1_ADDRESS.toLowerCase()) {
+        const derivedEvents = await fetchArtifactEvents(client, nftAddress)
+        // ArtifactRegistry doesn't have Attestations in the same way (yet), or they are separate.
+        // For now, return graph without attestations.
+        return buildProvenanceGraph(derivedEvents, [])
+    }
+
     const [derivedEvents, attestations] = await Promise.all([
         fetchDerivedEvents(client, nftAddress),
         fetchAttestedEvents(client, nftAddress),
