@@ -10,7 +10,7 @@ import "./policies/IUsagePolicy.sol";
  * @notice Central registry for Software Artifacts, Lineage, and Policy Enforcement.
  * @dev Implements the Arc Artifact Protocol v0.1 logic.
  */
-contract ArtifactRegistry is Ownable, ReentrancyGuard {
+contract ArtifactRegistryV1 is Ownable, ReentrancyGuard {
     struct Artifact {
         uint256 id;
         address publisher;
@@ -43,6 +43,9 @@ contract ArtifactRegistry is Ownable, ReentrancyGuard {
     );
 
     constructor() Ownable(msg.sender) {}
+
+    /// @notice Protocol version
+    uint8 public constant VERSION = 1;
 
     /**
      * @notice Publish a new Genesis Artifact (no parent)

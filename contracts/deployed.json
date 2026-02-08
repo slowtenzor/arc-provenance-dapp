@@ -2,12 +2,17 @@
   "network": "arcTestnet",
   "chainId": 5042002,
   "deployer": "0x4c155324A7Fc115640F0087a91CeF69C5e8A1C39",
-  "timestamp": "2026-02-06T18:15:03.416Z",
+  "timestamp": "2026-02-08T11:15:14.499Z",
+  "version": "v1",
   "contracts": {
+    "ArtifactRegistryV1": {
+      "address": "0xD76546043E4d9bb7fA3Bd73533A02c82aE4be2f8"
+    },
+    "PayableUsagePolicyV1": {
+      "address": "0x103944642c5Cc62BbF80d967c690f3EADac2b47e"
+    },
     "DigitalObjectNFT": {
-      "address": "0x87020198e7595C60b200EA80be41548F44573365",
-      "name": "ARC Digital Objects",
-      "symbol": "ARCDO"
+      "address": "0x87020198e7595C60b200EA80be41548F44573365"
     },
     "ProvenanceRegistryV2": {
       "address": "0xF015b52C9739Dc8D0739e7f7700eC7bbaE9B77C7"
