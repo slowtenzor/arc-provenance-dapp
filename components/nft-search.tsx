@@ -35,7 +35,7 @@ export function NftSearch() {
                 <div className="flex-1">
                     <Input
                         type="text"
-                        placeholder="Enter NFT contract address (0x...)"
+                        placeholder="Enter Artifact Registry address (0x...)"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         className="h-12 text-base bg-background/50 border-border/50"
@@ -43,7 +43,7 @@ export function NftSearch() {
                 </div>
                 <Button type="submit" size="lg" className="h-12 px-6">
                     <Search className="w-4 h-4 mr-2" />
-                    Analyze
+                    Explore
                 </Button>
             </div>
             {error && (

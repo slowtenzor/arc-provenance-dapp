@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ARC Provenance",
-  description: "Visualize onchain provenance graphs for NFT assets on Arc Network",
+  title: "Arc Artifacts",
+  description: "Visualize onchain provenance graphs for software artifacts on Arc Network", 
 };
 
 export default function RootLayout({

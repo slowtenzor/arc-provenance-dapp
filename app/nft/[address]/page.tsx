@@ -100,7 +100,7 @@ export default function NftAnalysisPage() {
                             <GitBranch className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold">Provenance Analysis</h1>
+                            <h1 className="text-xl font-bold">Artifact Provenance</h1>
                             <p className="text-xs text-muted-foreground">Arc Network Testnet</p>
                         </div>
                     </div>
@@ -176,7 +176,7 @@ export default function NftAnalysisPage() {
                 {/* Provenance Graph */}
                 <Card className="bg-card/50 border-border/30">
                     <CardHeader>
-                        <CardTitle className="text-lg">Provenance Tree</CardTitle>
+                        <CardTitle className="text-lg">Lineage</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {loading ? (
@@ -194,7 +194,7 @@ export default function NftAnalysisPage() {
                 {/* Transaction List */}
                 <Card className="bg-card/50 border-border/30">
                     <CardHeader>
-                        <CardTitle className="text-lg">Transactions</CardTitle>
+                        <CardTitle className="text-lg">Events</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {loading ? (
