@@ -15,8 +15,8 @@ export default function HomePage() {
             <GitBranch className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">ARC Provenance</h1>
-            <p className="text-xs text-muted-foreground">Onchain Asset Lineage</p>
+            <h1 className="text-xl font-bold">Arc Artifacts</h1>
+            <p className="text-xs text-muted-foreground">Onchain Artifact Lineage</p>
           </div>
         </div>
         <WalletConnect />
@@ -29,13 +29,14 @@ export default function HomePage() {
             Arc Network Testnet
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Visualize NFT
+            Visualize
             <span className="bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent">
-              {' '}Provenance
+              {' '}Artifact
             </span>
+            {' '}Provenance
           </h2>
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
-            Explore the onchain lineage graph of NFT assets. Track origins, derivatives, and attestations.
+            Explore onchain lineage of software artifacts. Track publications, derivations, and attestations.
           </p>
         </div>
 
