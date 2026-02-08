@@ -65,10 +65,20 @@ export function TransactionList({ nodes, attestations }: TransactionListProps) {
         })),
     ]
 
-    // Sort by block number descending
-    transactions.sort((a, b) => Number(b.blockNumber - a.blockNumber))
+    // Dedup by txHash + type + tokenId (+ kind for attest)
+    const seen = new Set<string>()
+    const deduped: TransactionRow[] = []
+    for (const tx of transactions) {
+        const key = `${tx.txHash}:${tx.type}:${tx.tokenId}:${tx.kind ?? ''}`
+        if (seen.has(key)) continue
+        seen.add(key)
+        deduped.push(tx)
+    }
 
-    if (transactions.length === 0) {
+    // Sort by block number descending
+    deduped.sort((a, b) => Number(b.blockNumber - a.blockNumber))
+
+    if (deduped.length === 0) {
         return (
             <div className="text-center py-8 text-muted-foreground">
                 No transactions found
@@ -105,7 +115,7 @@ export function TransactionList({ nodes, attestations }: TransactionListProps) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {transactions.slice(0, 20).map((tx, idx) => (
+                    {deduped.slice(0, 20).map((tx, idx) => (
                         <TableRow key={`${tx.txHash}-${idx}`} className="border-border/30">
                             <TableCell>
                                 <Badge variant={getBadgeVariant(tx.type)} className="capitalize text-xs">
