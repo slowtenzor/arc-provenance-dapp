@@ -76,7 +76,7 @@ export default function ArtifactPage() {
     <div className="min-h-screen">
       <header className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <Link href={`/nft/${ARTIFACT_REGISTRY_V1_ADDRESS}`} className="text-muted-foreground hover:text-foreground transition-colors">
+          <Link href={`/registry/${ARTIFACT_REGISTRY_V1_ADDRESS}`} className="text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>

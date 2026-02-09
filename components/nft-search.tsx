@@ -26,7 +26,7 @@ export function NftSearch() {
             return
         }
 
-        router.push(`/nft/${address}`)
+        router.push(`/registry/${address}`)
     }
 
     return (
