@@ -101,7 +101,7 @@ export default function ArtifactPage() {
               <div className="text-sm text-muted-foreground">No data</div>
             )}
             <div className="mt-4 text-xs text-muted-foreground">
-              Deterministic SVG derived from contentHash (identicon/randomart style).
+              Deterministic SVG derived from contentHash (drunken bishop / SSH randomart style).
             </div>
           </CardContent>
         </Card>
