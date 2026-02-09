@@ -1,13 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { createPublicClient, http, Address } from 'viem'
 import Link from 'next/link'
 import { arcTestnet } from '@/lib/chains'
 import { fetchProvenanceGraph, ProvenanceGraph, ProvenanceNode, AttestationNode } from '@/lib/graph-builder'
 import { generateMockProvenanceGraph } from '@/lib/mock-data'
-import { getExplorerAddressUrl, ARTIFACT_REGISTRY_V1_ADDRESS, DIGITAL_OBJECT_NFT_ADDRESS } from '@/lib/contracts'
+import {
+    getExplorerAddressUrl,
+    ARTIFACT_REGISTRY_V1_ADDRESS,
+    DIGITAL_OBJECT_NFT_ADDRESS,
+    PAYABLE_USAGE_POLICY_V1_ADDRESS,
+} from '@/lib/contracts'
 import { WalletConnect } from '@/components/wallet-connect'
 import { ProvenanceMetrics } from '@/components/provenance-metrics'
 import { ProvenanceGraphView } from '@/components/provenance-graph'
@@ -17,18 +22,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { GitBranch, ArrowLeft, ExternalLink, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-
-// Flatten nodes for transaction list
-function flattenNodes(nodes: ProvenanceNode[]): ProvenanceNode[] {
-    const result: ProvenanceNode[] = []
-    for (const node of nodes) {
-        result.push(node)
-        if (node.children.length > 0) {
-            result.push(...flattenNodes(node.children))
-        }
-    }
-    return result
-}
 
 // Collect all attestations
 function collectAttestations(nodes: ProvenanceNode[]): AttestationNode[] {
@@ -52,13 +45,13 @@ export default function NftAnalysisPage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true)
         setError(null)
 
         // Use mock data if ?mock=true
         if (useMock) {
-            await new Promise(resolve => setTimeout(resolve, 500)) // Simulate loading
+            await new Promise((resolve) => setTimeout(resolve, 500)) // Simulate loading
             setGraph(generateMockProvenanceGraph())
             setLoading(false)
             return
@@ -78,13 +71,12 @@ export default function NftAnalysisPage() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [address, useMock])
 
     useEffect(() => {
         fetchData()
-    }, [address, useMock])
+    }, [fetchData])
 
-    const allNodes = graph ? flattenNodes(graph.roots) : []
     const allAttestations = graph ? collectAttestations(graph.roots) : []
 
     return (
@@ -115,17 +107,15 @@ export default function NftAnalysisPage() {
                         <div className="flex items-center gap-2">
                             <h3 className="font-semibold">Contracts</h3>
                             {useMock && (
-                                <Badge variant="secondary" className="text-xs bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                                <Badge
+                                    variant="secondary"
+                                    className="text-xs bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
+                                >
                                     Demo Mode
                                 </Badge>
                             )}
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={fetchData}
-                            disabled={loading}
-                        >
+                        <Button variant="ghost" size="sm" onClick={fetchData} disabled={loading}>
                             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                             Refresh
                         </Button>
@@ -133,7 +123,9 @@ export default function NftAnalysisPage() {
 
                     <div className="space-y-2">
                         <div className="flex items-center gap-4">
-                            <Badge variant="outline" className="text-xs w-28 justify-center">ArtifactRegistry</Badge>
+                            <Badge variant="outline" className="text-xs w-28 justify-center">
+                                ArtifactRegistry
+                            </Badge>
                             <a
                                 href={getExplorerAddressUrl(ARTIFACT_REGISTRY_V1_ADDRESS)}
                                 target="_blank"
@@ -145,7 +137,23 @@ export default function NftAnalysisPage() {
                             </a>
                         </div>
                         <div className="flex items-center gap-4">
-                            <Badge variant="outline" className="text-xs w-28 justify-center">DigitalObject</Badge>
+                            <Badge variant="outline" className="text-xs w-28 justify-center">
+                                PayablePolicy
+                            </Badge>
+                            <a
+                                href={getExplorerAddressUrl(PAYABLE_USAGE_POLICY_V1_ADDRESS)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-mono text-sm text-violet-400 hover:underline inline-flex items-center gap-2"
+                            >
+                                {PAYABLE_USAGE_POLICY_V1_ADDRESS}
+                                <ExternalLink className="w-3 h-3" />
+                            </a>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <Badge variant="outline" className="text-xs w-28 justify-center">
+                                DigitalObject
+                            </Badge>
                             <a
                                 href={getExplorerAddressUrl(DIGITAL_OBJECT_NFT_ADDRESS)}
                                 target="_blank"
@@ -159,7 +167,6 @@ export default function NftAnalysisPage() {
                     </div>
                 </CardContent>
             </Card>
-
 
             {/* Error State */}
             {error && (
@@ -223,7 +230,7 @@ export default function NftAnalysisPage() {
                                 ))}
                             </div>
                         ) : (
-                            <TransactionList nodes={allNodes} attestations={allAttestations} />
+                            <TransactionList roots={graph?.roots ?? []} attestations={allAttestations} />
                         )}
                     </CardContent>
                 </Card>

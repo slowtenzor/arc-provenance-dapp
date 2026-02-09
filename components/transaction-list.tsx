@@ -1,7 +1,11 @@
 'use client'
 
+import { useEffect, useMemo, useState } from 'react'
+import { createPublicClient, http } from 'viem'
+import { arcTestnet } from '@/lib/chains'
 import { ProvenanceNode, AttestationNode, getAttestationKindLabel } from '@/lib/graph-builder'
 import { getExplorerTxUrl, getExplorerAddressUrl } from '@/lib/contracts'
+import { extractUsdcPaymentFromReceipt, formatUsdc } from '@/lib/payments'
 import {
     Table,
     TableBody,
@@ -14,7 +18,7 @@ import { Badge } from '@/components/ui/badge'
 import { ExternalLink } from 'lucide-react'
 
 interface TransactionListProps {
-    nodes: ProvenanceNode[]
+    roots: ProvenanceNode[]
     attestations: AttestationNode[]
 }
 
@@ -31,7 +35,15 @@ type TransactionRow = {
     kind?: number  // for attestations
 }
 
-export function TransactionList({ nodes, attestations }: TransactionListProps) {
+type PaysInfo = {
+    recipient: string
+    amountUsdc?: string
+    status?: 'ok' | 'trace'
+}
+
+export function TransactionList({ roots, attestations }: TransactionListProps) {
+    const client = useMemo(() => createPublicClient({ chain: arcTestnet, transport: http() }), [])
+
     // Flatten all nodes recursively
     const flattenNodes = (nodeList: ProvenanceNode[]): ProvenanceNode[] => {
         const result: ProvenanceNode[] = []
@@ -44,29 +56,86 @@ export function TransactionList({ nodes, attestations }: TransactionListProps) {
         return result
     }
 
-    const allNodes = flattenNodes(nodes)
+    const allNodes = useMemo(() => flattenNodes(roots), [roots, flattenNodes])
 
     // Combine all transactions
-    const transactions: TransactionRow[] = [
-        ...allNodes.map((n) => ({
-            type: (n.parentId === null ? 'root' : 'derive') as 'root' | 'derive',
-            txHash: n.txHash,
-            actor: n.actor,
-            tokenId: n.tokenId.toString(),
-            blockNumber: n.blockNumber,
-        })),
-        ...attestations.map((a) => ({
-            type: 'attest' as const,
-            txHash: a.txHash,
-            actor: a.attester,
-            tokenId: a.tokenId.toString(),
-            blockNumber: a.blockNumber,
-            kind: a.kind,
-        })),
-    ]
+    const transactions: TransactionRow[] = useMemo(() => {
+        const rows: TransactionRow[] = [
+            ...allNodes.map((n) => ({
+                type: (n.parentId === null ? 'root' : 'derive') as 'root' | 'derive',
+                txHash: n.txHash,
+                actor: n.actor,
+                tokenId: n.tokenId.toString(),
+                blockNumber: n.blockNumber,
+            })),
+            ...attestations.map((a) => ({
+                type: 'attest' as const,
+                txHash: a.txHash,
+                actor: a.attester,
+                tokenId: a.tokenId.toString(),
+                blockNumber: a.blockNumber,
+                kind: a.kind,
+            })),
+        ]
 
-    // Sort by block number descending
-    transactions.sort((a, b) => Number(b.blockNumber - a.blockNumber))
+        // Dedup rows (we used to double-flatten and show duplicates)
+        const seen = new Set<string>()
+        const deduped: TransactionRow[] = []
+        for (const r of rows) {
+            const key = `${r.type}:${r.txHash}:${r.tokenId}:${r.kind ?? ''}`
+            if (seen.has(key)) continue
+            seen.add(key)
+            deduped.push(r)
+        }
+
+        // Sort by block number descending
+        deduped.sort((a, b) => Number(b.blockNumber - a.blockNumber))
+        return deduped
+    }, [allNodes, attestations])
+
+    const [paysByTx, setPaysByTx] = useState<Record<string, PaysInfo | null>>({})
+
+    // Fetch payments for the first 20 rows (best-effort)
+    useEffect(() => {
+        let cancelled = false
+
+        async function run() {
+            const top = transactions.slice(0, 20)
+            const missing = top
+                .map((t) => t.txHash)
+                .filter((h) => paysByTx[h] === undefined)
+
+            if (missing.length === 0) return
+
+            for (const txHash of missing) {
+                try {
+                    const receipt = await client.getTransactionReceipt({ hash: txHash as `0x${string}` })
+                    const payment = extractUsdcPaymentFromReceipt(receipt)
+                    const info: PaysInfo | null = payment
+                        ? {
+                            recipient: payment.recipient,
+                            amountUsdc: formatUsdc(payment.amount),
+                            status: 'ok',
+                        }
+                        : null
+
+                    if (!cancelled) {
+                        setPaysByTx((prev) => ({ ...prev, [txHash]: info }))
+                    }
+                } catch {
+                    if (!cancelled) {
+                        // If receipt can't be fetched, keep it unknown
+                        setPaysByTx((prev) => ({ ...prev, [txHash]: null }))
+                    }
+                }
+            }
+        }
+
+        run()
+        return () => {
+            cancelled = true
+        }
+    }, [client, transactions, paysByTx])
 
     if (transactions.length === 0) {
         return (
@@ -100,6 +169,7 @@ export function TransactionList({ nodes, attestations }: TransactionListProps) {
                         <TableHead className="w-24">Type</TableHead>
                         <TableHead>Token ID</TableHead>
                         <TableHead>Actor</TableHead>
+                        <TableHead>Pays</TableHead>
                         <TableHead>Block</TableHead>
                         <TableHead className="text-right">Transaction</TableHead>
                     </TableRow>
@@ -125,6 +195,26 @@ export function TransactionList({ nodes, attestations }: TransactionListProps) {
                                     {formatAddress(tx.actor)}
                                     <ExternalLink className="w-3 h-3" />
                                 </a>
+                            </TableCell>
+                            <TableCell className="font-mono text-sm">
+                                {(() => {
+                                    const pays = paysByTx[tx.txHash]
+                                    if (pays === undefined) return <span className="text-muted-foreground">…</span>
+                                    if (pays === null) return <span className="text-muted-foreground">n/a (trace)</span>
+                                    return (
+                                        <span className="text-muted-foreground">
+                                            {pays.amountUsdc ?? 'n/a'} USDC →{' '}
+                                            <a
+                                                href={getExplorerAddressUrl(pays.recipient)}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-mono text-violet-400 hover:underline"
+                                            >
+                                                {formatAddress(pays.recipient)}
+                                            </a>
+                                        </span>
+                                    )
+                                })()}
                             </TableCell>
                             <TableCell className="font-mono text-sm text-muted-foreground">
                                 {tx.blockNumber.toString()}
