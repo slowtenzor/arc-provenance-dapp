@@ -48,6 +48,14 @@ function NodeCard({ node, depth = 0 }: { node: ProvenanceNode; depth?: number })
                         </div>
 
                         <div className="space-y-1 text-sm">
+                            {!isRoot && node.parentId !== null && (
+                                <div className="flex items-center gap-2">
+                                    <span className="text-muted-foreground">Lineage:</span>
+                                    <span className="font-mono text-muted-foreground">
+                                        #{node.tokenId.toString()} ← #{node.parentId.toString()}
+                                    </span>
+                                </div>
+                            )}
                             <div className="flex items-center gap-2">
                                 <span className="text-muted-foreground">Creator:</span>
                                 <a
